@@ -14,7 +14,7 @@ export function KpiPanel() {
 
     useEffect(() => {
         getKpis(user.jwt).then(kpis => setKpis(kpis))
-    }, []);
+    }, [user.jwt]);
 
     if (!isDef(kpis)) {
         return <Loading />

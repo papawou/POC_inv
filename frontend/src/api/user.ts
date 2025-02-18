@@ -12,5 +12,8 @@ export async function login(credentials: Credentials): Promise<{ access_token: s
         },
         body: JSON.stringify(credentials)
     });
+    if (!res.ok) {
+        throw res
+    }
     return await res.json()
 }

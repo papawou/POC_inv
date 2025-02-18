@@ -36,5 +36,10 @@ export async function getKpis(token: string): Promise<Kpi[]> {
             'Authorization': `Bearer ${token}`
         },
     });
+
+    if (!res.ok) {
+        throw res
+    }
+
     return await res.json()
 }

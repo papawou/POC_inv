@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import { GuestGuard } from "./GuestGuard";
 import Paths from "../technical/Paths";
-import { Fullpage } from "../Fullpage";
 import { KpiPanel } from "../pages/KpiPanel";
 import { NotFound } from "../ui/NotFound";
 import { Login } from "../pages/Login";
 import { UserGuard } from "./UserGuard";
+import { Fullpage } from "../ui/Fullpage";
 
 export function Router() {
     return (
