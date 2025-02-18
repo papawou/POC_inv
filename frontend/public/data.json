@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "title": "Opportunités",
+        "value": "12",
+        "subtitle": "À analyser",
+        "subtitleValue": "3"
+    },
+    {
+        "id": 2,
+        "title": "Tolérance au risque (sur 10)",
+        "value": "7"
+    },
+    {
+        "id": 3,
+        "title": "Régions d'investissement",
+        "value": [
+            {
+                "id": 1,
+                "title": "Genève"
+            },
+            {
+                "id": 2,
+                "title": "Vaud"
+            },
+            {
+                "id": 3,
+                "title": "Neuchâtel"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Profil d'investissement complété à",
+        "value": "75%"
+    }
+]
