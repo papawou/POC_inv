@@ -1,4 +1,4 @@
-import { type KpiPercent } from "../../KpiPanel"
+import { type KpiPercent } from "../../pages/KpiPanel"
 
 type Props = {
     kpi: KpiPercent

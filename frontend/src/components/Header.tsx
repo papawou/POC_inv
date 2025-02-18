@@ -1,5 +1,5 @@
-import { useAuth } from "./providers/AuthProvider";
-import { useViewer } from "./providers/ViewerProvider";
+import { useAuth } from "../providers/AuthProvider";
+import { useViewer } from "../providers/ViewerProvider";
 
 export function Header() {
     const { logout } = useAuth();
@@ -8,10 +8,11 @@ export function Header() {
     return (
         <header className="w-full p-4 flex justify-end bg-gray-100 shadow-md">
             <button
+            style={{cursor: "pointer"}}
                 onClick={logout}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
             >
-                {user?.email}
+                {user.email}
             </button>
         </header>
     )

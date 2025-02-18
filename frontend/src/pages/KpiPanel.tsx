@@ -1,49 +1,19 @@
-import { KpiArray } from "./ui/kpi/KpiArray";
-import { KpiPercent } from "./ui/kpi/KpiPercent";
-import { KpiTask } from "./ui/kpi/KpiTask";
-import { KpiNumeric } from "./ui/kpi/KpiNumeric";
+import { KpiArray } from "../ui/kpi/KpiArray";
+import { KpiPercent } from "../ui/kpi/KpiPercent";
+import { KpiTask } from "../ui/kpi/KpiTask";
+import { KpiNumeric } from "../ui/kpi/KpiNumeric";
 import { useEffect, useState } from "react";
-import { Loading } from "./ui/Loading";
-import { isDef } from "./technical/isDef";
-
-
-type KpiBase = {
-    id: number;
-    title: string;
-};
-
-export type KpiTask = KpiBase & {
-    id: 1;
-    value: string;
-    subtitle: string;
-    subtitleValue: string;
-};
-
-export type KpiNumeric = KpiBase & {
-    id: 2;
-    value: string;
-};
-
-export type KpiArray = KpiBase & {
-    id: 3;
-    value: { id: number; title: string }[];
-};
-
-export type KpiPercent = KpiBase & {
-    id: 4;
-    value: string;
-};
-
-type Kpi = KpiTask | KpiNumeric | KpiArray | KpiPercent;
+import { Loading } from "../ui/Loading";
+import { isDef } from "../technical/isDef";
+import { getKpis, Kpi } from "../api/kpi";
+import { useViewer } from "../providers/ViewerProvider";
 
 export function KpiPanel() {
+    const { user } = useViewer()
     const [kpis, setKpis] = useState<Kpi[]>()
 
     useEffect(() => {
-        fetch("/data.json")
-            .then((response) => response.json())
-            .then((json) => setKpis(json))
-            .catch((error) => console.error("Error fetching JSON:", error));
+        getKpis(user.jwt).then(kpis => setKpis(kpis))
     }, []);
 
     if (!isDef(kpis)) {

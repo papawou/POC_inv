@@ -1,8 +1,10 @@
+import { jwtDecode } from "jwt-decode"
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from "react"
+import { login } from "../api/user"
 
-
-type User = {
-    email: string
+export type User = {
+    email: string,
+    jwt: string
 }
 
 type AuthContextValue = {
@@ -12,7 +14,6 @@ type AuthContextValue = {
 }
 
 const AuthContext = createContext<AuthContextValue>(Object.create(null))
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -22,8 +23,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setUser(null)
     }, [])
 
-    const handleLogin = useCallback((credentials: { email: string, password: string }) => {
-        setUser({ email: credentials.email });
+    const handleLogin = useCallback(async (credentials: { email: string, password: string }) => {
+        const token = await login(credentials);
+        const decoded = jwtDecode<{ email: string }>(token.access_token);
+        setUser({
+            email: decoded.email,
+            jwt: token.access_token
+        })
     }, [])
 
     const contextValue: AuthContextValue = useMemo(() => ({

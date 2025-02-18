@@ -10,6 +10,12 @@ psql --command="CREATE DATABASE $DB_NAME;"
 cat > configure.sql << EOF
 CREATE USER $DB_USERNAME WITH PASSWORD '$DB_USERPWD';
 ALTER USER $DB_USERNAME WITH SUPERUSER;
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
 EOF
 
 psql --dbname=$DB_NAME --file="./configure.sql"

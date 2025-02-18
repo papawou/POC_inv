@@ -1,4 +1,4 @@
-import { type KpiArray } from "../../KpiPanel";
+import { type KpiArray } from "../../pages/KpiPanel";
 
 
 type Props = {

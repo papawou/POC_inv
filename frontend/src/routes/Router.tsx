@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { GuestGuard } from "./GuestGuard";
 import Paths from "../technical/Paths";
 import { Fullpage } from "../Fullpage";
-import { KpiPanel } from "../KpiPanel";
+import { KpiPanel } from "../pages/KpiPanel";
 import { NotFound } from "../ui/NotFound";
-import { Login } from "../Login";
+import { Login } from "../pages/Login";
 import { UserGuard } from "./UserGuard";
 
 export function Router() {

@@ -1,4 +1,4 @@
-import { type KpiNumeric } from "../../KpiPanel"
+import { type KpiNumeric } from "../../pages/KpiPanel"
 
 type Props = {
     kpi: KpiNumeric

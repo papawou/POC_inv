@@ -40,6 +40,8 @@ services:
   database:
     stdin_open: true
     tty: true
+    ports:
+      - 5432:5432
     volumes:
       - kdb:/var/lib/postgresql/
     build:

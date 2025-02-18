@@ -1,4 +1,4 @@
-import { type KpiTask } from "../../KpiPanel";
+import { type KpiTask } from "../../pages/KpiPanel";
 
 
 type Props = {
