@@ -1,12 +1,18 @@
 import { useCallback, useState } from "react"
+import { useAuth } from "./providers/AuthProvider";
+import { isDef } from "./technical/isDef";
 
 export function Login() {
-    const email = useState<string>();
-    const password = useState<string>();
+    const { login } = useAuth();
+    const [email, setEmail] = useState<string>();
+    const [password, setPassword] = useState<string>();
 
     const handleSubmit = useCallback(() => {
-        
-    }, [])
+        if (!isDef(email) || !isDef(password)) {
+            return;
+        }
+        login({ email, password });
+    }, [email, password])
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">

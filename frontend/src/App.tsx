@@ -1,10 +1,15 @@
-import { Kpi } from './Kpi'
+import { BrowserRouter } from "react-router-dom"
+
+import { AuthProvider } from "./providers/AuthProvider"
+import { Router } from "./routes/Router"
 
 function App() {
   return (
-    <>
-      <Kpi />
-    </>
+    <AuthProvider>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
