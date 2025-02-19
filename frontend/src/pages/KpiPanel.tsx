@@ -6,15 +6,13 @@ import { useEffect, useState } from "react";
 import { Loading } from "../ui/Loading";
 import { isDef } from "../technical/isDef";
 import { getKpis, Kpi } from "../api/kpi";
-import { useViewer } from "../providers/ViewerProvider";
 
 export function KpiPanel() {
-    const { user } = useViewer()
     const [kpis, setKpis] = useState<Kpi[]>()
 
     useEffect(() => {
-        getKpis(user.jwt).then(kpis => setKpis(kpis))
-    }, [user.jwt]);
+        getKpis().then(kpis => setKpis(kpis))
+    }, []);
 
     if (!isDef(kpis)) {
         return <Loading />

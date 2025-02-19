@@ -2,6 +2,7 @@ import { jwtDecode } from "jwt-decode"
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { login } from "../api/user"
 import { isDef } from "../technical/isDef"
+import { updateJwt } from "../technical/jwt"
 
 export type User = {
     email: string,
@@ -19,27 +20,46 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
     const [user, setUser] = useState<User | null>(null);
+    const [jwt, setJwt] = useState<string | null>(localStorage.getItem("jwt"));
 
     const handleLogout = useCallback(() => {
-        localStorage.removeItem("jwt");
-        setUser(null)
-    }, [])
+        updateJwt(null)
+    }, []);
 
     const handleLogin = useCallback(async (credentials: { email: string, password: string }) => {
         const token = await login(credentials);
-        localStorage.setItem("jwt", token.access_token);
-        const decoded = jwtDecode<{ email: string, exp: number }>(token.access_token);
-        setUser({
-            email: decoded.email,
-            jwt: token.access_token
-        });
-    }, [])
+        updateJwt(token.access_token);
+    }, []);
 
+    // jwt storage event
     useEffect(() => {
-        if (!isDef(user)) {
+        const handleJwt = (event: StorageEvent | CustomEvent<{ key: string; value: string | null }>) => {
+            if (event instanceof CustomEvent && event.detail.key === "jwt") {
+                setJwt(event.detail.value ?? null);
+            }
+            if (event instanceof StorageEvent && event.key === "jwt") {
+                setJwt(event.newValue ?? null);
+            }
+        }
+        window.addEventListener("storage", handleJwt)
+        window.addEventListener("localStorageChange", handleJwt as EventListener);
+        return () => {
+            window.removeEventListener("storage", handleJwt)
+            window.removeEventListener("localStorageChange", handleJwt as EventListener);
+        }
+    }, []);
+
+    // jwt expiration
+    useEffect(() => {
+        if (!isDef(jwt)) {
+            setUser(null)
             return;
         }
-        const decoded = jwtDecode<{ email: string, exp: number }>(user.jwt);
+        const decoded = jwtDecode<{ email: string, exp: number }>(jwt);
+        setUser({
+            email: decoded.email,
+            jwt
+        });
         const expirationDelay = decoded.exp * 1000 - Date.now();
         if (expirationDelay <= 0) {
             handleLogout();
@@ -49,13 +69,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
             handleLogout();
         }, expirationDelay)
         return () => { clearTimeout(timeout) }
-    }, [user, handleLogout])
+    }, [jwt, handleLogout]);
 
     const contextValue: AuthContextValue = useMemo(() => ({
         user,
         login: handleLogin,
         logout: handleLogout
-    }), [handleLogin, user])
+    }), [handleLogin, handleLogout, user]);
 
     return (
         <AuthContext.Provider value={contextValue}>

@@ -1,3 +1,5 @@
+import { updateJwt } from "../technical/jwt";
+
 type KpiBase = {
     id: number;
     title: string;
@@ -27,17 +29,20 @@ export type KpiPercent = KpiBase & {
 
 export type Kpi = KpiTask | KpiNumeric | KpiArray | KpiPercent;
 
-export async function getKpis(token: string): Promise<Kpi[]> {
+export async function getKpis(): Promise<Kpi[]> {
     const res = await fetch("http://localhost:3000/kpi/data", {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem("jwt")}`
         },
     });
 
     if (!res.ok) {
+        if (res.status === 401) {
+            updateJwt(null)
+        }
         throw res
     }
 
