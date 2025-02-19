@@ -19,52 +19,37 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
     const [user, setUser] = useState<User | null>(null);
-    const [jwt, setJwt] = useState<string | null>();
 
     const handleLogout = useCallback(() => {
+        localStorage.removeItem("jwt");
         setUser(null)
     }, [])
 
     const handleLogin = useCallback(async (credentials: { email: string, password: string }) => {
         const token = await login(credentials);
         localStorage.setItem("jwt", token.access_token);
-        console.log(token)
-    }, [])
-
-
-    useEffect(() => {
-        if (!isDef(jwt)) {
-            setUser(null)
-            return;
-        }
-
-        const decoded = jwtDecode<{ email: string, exp: number }>(jwt);
+        const decoded = jwtDecode<{ email: string, exp: number }>(token.access_token);
         setUser({
             email: decoded.email,
-            jwt
+            jwt: token.access_token
         });
-        const timeout = setTimeout(() => {
-            setJwt(null);
-        }, 100000)
-        return () => clearTimeout(timeout)
-    }, [jwt])
+    }, [])
 
     useEffect(() => {
-        const handleJwt = (event: StorageEvent) => {
-            if (event.key === "jwt") {
-                if (!isDef(event.newValue)) {
-                    setJwt(null)
-                }
-                else {
-                    setJwt(event.newValue)
-                }
-            }
+        if (!isDef(user)) {
+            return;
         }
-        window.addEventListener("storage", handleJwt)
-        return () => {
-            window.removeEventListener("storage", handleJwt)
+        const decoded = jwtDecode<{ email: string, exp: number }>(user.jwt);
+        const expirationDelay = decoded.exp * 1000 - Date.now();
+        if (expirationDelay <= 0) {
+            handleLogout();
+            return;
         }
-    }, [])
+        const timeout = setTimeout(() => {
+            handleLogout();
+        }, expirationDelay)
+        return () => { clearTimeout(timeout) }
+    }, [user, handleLogout])
 
     const contextValue: AuthContextValue = useMemo(() => ({
         user,
